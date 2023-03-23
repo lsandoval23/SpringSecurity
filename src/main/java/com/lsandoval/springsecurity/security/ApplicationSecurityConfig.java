@@ -15,6 +15,9 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
+                // Metodo usado para permitir solicitudes a paths sin autenticacion
+                .antMatchers("/")
+                .permitAll()
                 // Todas las solicitudes
                 .anyRequest()
                 // Requieren autenticacion
