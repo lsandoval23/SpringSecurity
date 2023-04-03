@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.lsandoval.springsecurity.security.ApplicationUserRole.*;
+
 // Este sera la clase para la configuracion de spring secutiry
 @Configuration
 @EnableWebSecurity
@@ -54,11 +56,18 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
         UserDetails annaSmithUser = User.builder()
                 .username("annasmith")
                 .password(passwordEncoder.encode("password"))
-                .roles("STUDENT")
+                .roles(STUDENT.name())  // ROLE_STUDENT
+                .build();
+
+        UserDetails lindaUser = User.builder()
+                .username("linda")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ADMIN.name()) // ROLE_ADMIN
                 .build();
 
         return new InMemoryUserDetailsManager(
-          annaSmithUser
+                annaSmithUser,
+                lindaUser
         );
     }
 }
