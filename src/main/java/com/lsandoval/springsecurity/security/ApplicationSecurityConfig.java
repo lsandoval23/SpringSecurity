@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,6 +20,7 @@ import static com.lsandoval.springsecurity.security.ApplicationUserRole.*;
 // Este sera la clase para la configuracion de spring secutiry
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
@@ -43,12 +45,12 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**/").hasRole(STUDENT.name())
                 // Usamos el metodo hasAuthority para definir que permisos son los que tienen acceso a un endpoint en especifico
                 // usando antmatchers, tambien definiendo a que metodos HTTP se tiene acceso
-                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-                // Aquellos que tengan el rol, admin o admin trainee tendran acceso al endpoint de management
-                .antMatchers("/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
-                // Todas las solicitudes
+//                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//                // Aquellos que tengan el rol, admin o admin trainee tendran acceso al endpoint de management
+//                .antMatchers("/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
+//                // Todas las solicitudes
                 .anyRequest()
                 // Requieren autenticacion
                 .authenticated()
@@ -77,7 +79,7 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .username("linda")
                 .password(passwordEncoder.encode("password123"))
 //                .roles(ADMIN.name()) // ROLE_ADMIN
-                // Podemos agregar authorities, y dentro el rol
+                // Podemos agregar authorities, y dentro el rol (RECONOCE QUE ES UN ROL YA QUE TIENE EL FORMATO ROL_...)
                 .authorities(ADMIN.getGrantedAuthorities())
                 .build();
 
