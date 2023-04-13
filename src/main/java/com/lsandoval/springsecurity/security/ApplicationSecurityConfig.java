@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static com.lsandoval.springsecurity.security.ApplicationUserPermission.COURSE_WRITE;
 import static com.lsandoval.springsecurity.security.ApplicationUserRole.*;
@@ -36,21 +37,14 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                // Deshabilitamos el token csrf para los metodos post y get ??
-                .csrf().disable()
+                // Configuramos para que el token csrf se pase por los cookies, para usarlo en las siguientes consultas.
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .authorizeRequests()
                 // Metodo usado para permitir solicitudes a paths sin autenticacion
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
                 // aumentando el metodo hasRole a los antMatchers podemos restringir endpoints a ciertos roles.
                 .antMatchers("/api/**/").hasRole(STUDENT.name())
-                // Usamos el metodo hasAuthority para definir que permisos son los que tienen acceso a un endpoint en especifico
-                // usando antmatchers, tambien definiendo a que metodos HTTP se tiene acceso
-//                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-//                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-//                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-//                // Aquellos que tengan el rol, admin o admin trainee tendran acceso al endpoint de management
-//                .antMatchers("/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
-//                // Todas las solicitudes
                 .anyRequest()
                 // Requieren autenticacion
                 .authenticated()
