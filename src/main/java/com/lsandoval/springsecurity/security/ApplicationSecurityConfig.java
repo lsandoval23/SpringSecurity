@@ -37,9 +37,7 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                // Configuramos para que el token csrf se pase por los cookies, para usarlo en las siguientes consultas.
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+                .csrf().disable()
                 .authorizeRequests()
                 // Metodo usado para permitir solicitudes a paths sin autenticacion
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
@@ -49,8 +47,10 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                 // Requieren autenticacion
                 .authenticated()
                 .and()
-                // Del tipo basic auth
-                .httpBasic();
+                // Cambiamos a form based authentication
+                .formLogin()
+                // Configuramos una ruta para implementar una vista de login customizada
+                .loginPage("/login_custom").permitAll();
     }
 
 
