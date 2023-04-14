@@ -13,9 +13,15 @@ public class TemplateController {
 
     //  El controlador manejará el endpoint que se configuro para el login y devolverá la vista login que se implemente
     //  en el paquete de templates.
-    @GetMapping("login_custom")
+    @GetMapping("login")
     public String getLogin(){
         return "login";
+    }
+
+    // Controlador que devuelve la vista para la redireccion luego del login
+    @GetMapping("courses")
+    public String getCourses() {
+        return "courses";
     }
 
 

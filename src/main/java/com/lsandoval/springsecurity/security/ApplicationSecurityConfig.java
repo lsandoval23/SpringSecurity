@@ -49,8 +49,11 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .and()
                 // Cambiamos a form based authentication
                 .formLogin()
-                // Configuramos una ruta para implementar una vista de login customizada
-                .loginPage("/login_custom").permitAll();
+                    // Configuramos una ruta para implementar una vista de login customizada
+                    .loginPage("/login")
+                    .permitAll()
+                    // Definimos un endpoint para redireccionar luego de un login exitoso
+                    .defaultSuccessUrl("/courses", true);
     }
 
 
