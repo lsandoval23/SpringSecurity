@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.lsandoval.springsecurity.security.ApplicationUserPermission.COURSE_WRITE;
 import static com.lsandoval.springsecurity.security.ApplicationUserRole.*;
 
@@ -53,7 +55,14 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .permitAll()
                     // Definimos un endpoint para redireccionar luego de un login exitoso
-                    .defaultSuccessUrl("/courses", true);
+                    .defaultSuccessUrl("/courses", true)
+                .and()
+                .rememberMe()
+                    // Configuramos el tiempo de duración del cookie remember me a 21 dias
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                    // Definimos una llave secreta diferente a la que spring security tiene por defecto
+                    // para la generación del md5 del cookie remember me
+                    .key("secretkey");
     }
 
 
