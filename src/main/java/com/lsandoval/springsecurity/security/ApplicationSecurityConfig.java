@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
 
@@ -56,13 +57,30 @@ public class ApplicationSecurityConfig  extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     // Definimos un endpoint para redireccionar luego de un login exitoso
                     .defaultSuccessUrl("/courses", true)
+                    // Podemos darle un nombre diferente a los parametros de usuario y contraseña que se pasan en el formulario
+                    // Se dejan en su valor por defecto
+                    .passwordParameter("password")
+                    .usernameParameter("username")
                 .and()
                 .rememberMe()
                     // Configuramos el tiempo de duración del cookie remember me a 21 dias
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
                     // Definimos una llave secreta diferente a la que spring security tiene por defecto
                     // para la generación del md5 del cookie remember me
-                    .key("secretkey");
+                    .key("secretkey")
+                    .rememberMeParameter("remember-me")
+                .and()
+                .logout()
+                    // Endpoint para el url de logout
+                    .logoutUrl("/logout")
+                    // Si tenemos el token csrf desactivado, la solicitud puede de ser de cualquier tipo
+                    // En caso se tenga activada, usar el metodo POST
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                    // Eliminamos cookies, se cierra sesion
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID", "remember-me")
+                    .logoutSuccessUrl("/login");
     }
 
 
